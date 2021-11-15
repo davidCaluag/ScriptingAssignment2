@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="style.css">
     <!-- meta tags are not necessary here, but having them always is a good practice -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,14 +24,24 @@
       }
     </style>
   </head>
+
+
   <body>
-
-    <!-- our "canvas" where we draw things-->
-    <canvas id="canvas" width="600" height="400">
-      
+    <div>
+      <h1>Ping Pong Game</h1>
+      <h2>By: David Caluag</h2>
+      <h3>Heavily influenced by: <a href="https://thecodingpie.com/post/learn-to-code-ping-pong-game-using-javascript-and-html5" target="_blank">this guy.</a></h3>
+    </div>
+    <div>
+      <canvas id="canvas" width="600" height="400">
+      <script type="text/javascript" src="javaScript.js"></script>
     </canvas>
-
-    <!-- link to script.js -->
-    <script type="text/javascript" src="javaScript.js"></script>
+    </div>
+    <div>
+      <p>Objective: Reach 20 points first before the AI.</p>
+      <p>Getting points: Make the ball hit the RIGHT side of the wall.</p>
+      <p>Why isn't the ball moving? It's because it stops after the round ends. Move your paddle to continue.</p>
+      <p>Good luck; Have fun.</p>
+    </div>
   </body>
 </html>

@@ -211,7 +211,7 @@ function update() {
   }
 
   // if ball hit on left wall
-  if (ball.x - ball.radius <= 0) {;
+  if (ball.x - ball.radius <= 0) {
     ballMove = 0;
     // then ai scored 1 point
     ai.score<20 ? (ai.score+= 1, reset()) : (window.alert("AI Wins!"),hardReset());
