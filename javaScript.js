@@ -3,22 +3,21 @@ const canvas = document.getElementById('canvas');
 /* get a "context". Without "context", we can't draw on canvas */
 const ctx = canvas.getContext('2d');
 
-// some sounds
-const hitSound = new Audio('../sounds/hitSound.wav');
-const scoreSound = new Audio('../sounds/scoreSound.wav');
-const wallHitSound = new Audio('../sounds/wallHitSound.wav');
-
 /* some extra variables */
 const netWidth = 4;
 const netHeight = canvas.height;
 
 const paddleWidth = 10;
-const paddleHeight = 100;
+const paddleHeight = 60;
 
 let upArrowPressed = false;
 let downArrowPressed = false;
 
 /* some extra variables ends */
+
+//adding variable here
+
+ballMove =1;
 
 /* objects */
 // net
@@ -27,7 +26,7 @@ const net = {
   y: 0,
   width: netWidth,
   height: netHeight,
-  color: "#FFF"
+  color: "#FEF1E6"
 };
 
 // user paddle
@@ -36,7 +35,7 @@ const user = {
   y: canvas.height / 2 - paddleHeight / 2,
   width: paddleWidth,
   height: paddleHeight,
-  color: '#FFF',
+  color: '#90AACB',
   score: 0
 };
 
@@ -45,7 +44,7 @@ const ai = {
   y: canvas.height / 2 - paddleHeight / 2,
   width: paddleWidth,
   height: paddleHeight,
-  color: '#FFF',
+  color: '#FFB085',
   score: 0
 };
 
@@ -57,7 +56,7 @@ const ball = {
   speed: 7,
   velocityX: 5,
   velocityY: 5,
-  color: '#05EDFF'
+  color: '#F9D5A7'
 };
 
 /* objects declaration ends */
@@ -74,7 +73,7 @@ function drawNet() {
 
 // function to draw score
 function drawScore(x, y, score) {
-  ctx.fillStyle = '#fff';
+  ctx.fillStyle = '#000';
   ctx.font = '35px sans-serif';
 
   // syntax --> fillText(text, x, y)
@@ -123,7 +122,7 @@ function keyDownHandler(event) {
 // gets activated when we release the key
 function keyUpHandler(event) {
   switch (event.keyCode) {
-    // "up arraow" key
+    // "up arrow" key
     case 38:
       upArrowPressed = false;
       break;
@@ -137,6 +136,8 @@ function keyUpHandler(event) {
 /* moving paddles section end */
 
 // reset the ball
+
+//I'm going to use this reset() as a way to reset the score and give a pop-up if either one reaches 20.
 function reset() {
   // reset ball's value to older values
   ball.x = canvas.width / 2;
@@ -147,6 +148,23 @@ function reset() {
   ball.velocityX = -ball.velocityX;
   ball.velocityY = -ball.velocityY;
 }
+
+function hardReset() {
+    // reset ball's value to older values
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.speed = 7;
+  
+    // changes the direction of ball
+    ball.velocityX = -ball.velocityX;
+    ball.velocityY = -ball.velocityY;
+
+    //resetting the user score
+    user.score=0;
+    //resetting the AI score
+    ai.score=0;
+  }
+  
 
 // collision Detect function
 function collisionDetect(player, ball) {
@@ -175,32 +193,42 @@ function update() {
 
   // check if ball hits top or bottom wall
   if (ball.y + ball.radius >= canvas.height || ball.y - ball.radius <= 0) {
-    // play wallHitSound
-    wallHitSound.play();
     ball.velocityY = -ball.velocityY;
   }
 
    // if ball hit on right wall
    if (ball.x + ball.radius >= canvas.width) {
-    // play scoreSound
-    scoreSound.play();
+
+    ballMove = 0;
+    user.score<20 ? (user.score+= 1, reset()) : (window.alert("User Wins!"),hardReset());
+   /*
+    if (user.score<20){
     // then user scored 1 point
-    user.score += 1;
-    reset();
+        user.score += 1;
+        reset();
+    }
+    */
   }
 
   // if ball hit on left wall
-  if (ball.x - ball.radius <= 0) {
-    // play scoreSound
-    scoreSound.play();
+  if (ball.x - ball.radius <= 0) {;
+    ballMove = 0;
     // then ai scored 1 point
-    ai.score += 1;
-    reset();
+    ai.score<20 ? (ai.score+= 1, reset()) : (window.alert("AI Wins!"),hardReset());
+    
   }
 
   // move the ball
-  ball.x += ball.velocityX;
-  ball.y += ball.velocityY;
+  if(ballMove==0){
+    if(upArrowPressed || downArrowPressed){
+      ballMove=1;
+    }
+  }
+  else{
+    ball.x += ball.velocityX;
+    ball.y += ball.velocityY;
+  }
+  
 
   // ai paddle movement
   ai.y += ((ball.y - (ai.y + ai.height / 2))) * 0.09;
@@ -209,8 +237,6 @@ function update() {
   let player = (ball.x < canvas.width / 2) ? user : ai;
 
   if (collisionDetect(player, ball)) {
-    // play hitSound
-    hitSound.play();
     // default angle is 0deg in Radian
     let angle = 0;
 
@@ -236,7 +262,7 @@ function update() {
 // render function draws everything on to canvas
 function render() {
   // set a style
-  ctx.fillStyle = "#000"; /* whatever comes below this acquires black color (#000). */
+  ctx.fillStyle = "#FEF1E6"; /* whatever comes below this acquires black color (#000). */
   // draws the black board
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
